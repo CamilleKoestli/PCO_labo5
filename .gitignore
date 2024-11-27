@@ -1,0 +1,19 @@
+# Ignorer la consigne du laboratoire
+labo5.pdf
+
+# Ignorer les dossiers de construction
+code/build/
+code/cmake-build-debug/
+
+# Ignorer les fichiers de configuration IDE
+code/.idea/
+
+
+.idea
+.vscode
+trainsim1.0.pdf
+build
+cmake-build-debug
+QtrainSim/src/mainwindow.cpp
+
+consignes.pdf
