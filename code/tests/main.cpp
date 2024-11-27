@@ -18,12 +18,82 @@ void test(int nbThreads, int size, int seed) {
 }
 
 
-TEST(SortingTest, Test1) {
-    // TODO: Modify this test, and add others
-    int size = 0;
-    int nbThreads = 0;
-    int seed = 0;
+// TEST(SortingTest, Test1) {
+//     // TODO: Modify this test, and add others
+//     int size = 0;
+//     int nbThreads = 0;
+//     int seed = 0;
 
+//     test(nbThreads, size, seed);
+// }
+
+/**
+ * @brief Sorting a small array with a single thread.
+ */
+TEST(SortingTest, SingleThreadSmallArray) {
+    int size = 10;
+    int nbThreads = 1;
+    int seed = 42;
+    test(nbThreads, size, seed);
+}
+
+/**
+ * @brief Sorting a large array with a single thread.
+ */
+TEST(SortingTest, SingleThreadLargeArray) {
+    int size = 100000;
+    int nbThreads = 1;
+    int seed = 42;
+    test(nbThreads, size, seed);
+}
+
+/**
+ * @brief Sorting a large array with multiple threads.
+ */
+TEST(SortingTest, MultiThreadLargeArray) {
+    int size = 100000;
+    int nbThreads = 4;
+    int seed = 42;
+    test(nbThreads, size, seed);
+}
+
+/**
+ * @brief Sorting an empty array.
+ */
+TEST(SortingTest, EmptyArray) {
+    int size = 0;
+    int nbThreads = 4;
+    int seed = 42;
+    test(nbThreads, size, seed);
+}
+
+/**
+ * @brief Sorting a very large array with many threads.
+ */
+TEST(SortingTest, ManyThreadsLargeArray) {
+    int size = 1000000;
+    int nbThreads = 8;
+    int seed = 123;
+    test(nbThreads, size, seed);
+}
+
+/**
+ * @brief Sorting an array with a single element.
+ */
+TEST(SortingTest, SingleElementArray) {
+    int size = 1;
+    int nbThreads = 2;
+    int seed = 42;
+    test(nbThreads, size, seed);
+}
+
+/**
+ * @brief Sorting an array with all identical elements.
+ */
+TEST(SortingTest, IdenticalElementsArray) {
+    int size = 1000;
+    int nbThreads = 4;
+    int seed = 0; // This will generate all identical elements (e.g., 0).
     test(nbThreads, size, seed);
 }
 
