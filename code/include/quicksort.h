@@ -13,7 +13,7 @@
 #include <algorithm>
 
 /**
- * @brief The Quicksort class implements the multi-threaded Quicksort algorithm.
+ * @brief implémente l'algorithme de tri rapide multi-threadé.
  */
 template<typename T>
 class Quicksort : public MultithreadedSort<T> {
@@ -37,7 +37,7 @@ public:
     }
 
     /**
-     * @brief sort trie un tableau en utilisant le tri rapide.
+     * @brief trie un tableau en utilisant le tri rapide.
      * @param array tableau à trier
      */
     void sort(std::vector<T>& array) override {
@@ -77,16 +77,16 @@ private:
         Task(std::vector<T>* arr, int low, int high) : array(arr), lo(low), hi(high) {}
     };
 
-    PcoMutex mutex; // Mutex pour l'accès à la section critique
-    PcoConditionVariable condVar; // Variable de condition pour la gestion des threads
-    PcoConditionVariable finished; // Variable pour signaler la fin des tâches
+    PcoMutex mutex; // Accès à la SC
+    PcoConditionVariable condVar; // Gestion des threads
+    PcoConditionVariable finished; // Signaler la fin des tâches
     std::queue<Task> tasks; // File de tâches
-    std::vector<PcoThread> threads; // Threads de travail
+    std::vector<PcoThread> threads; // Threads
     unsigned int activeThreads = 0; // Nombre de threads actifs
-    bool stop; // Indique si les threads doivent s'arrêter
+    bool stop; // Threads doivent s'arrêter
 
     /**
-     * @brief worker est une méthode qui est exécutée par chaque thread pour traiter les tâches de tri.
+     * @brief Est exécutée par chaque thread pour traiter les tâches de tri.
      */
     void worker() {
         while (true) {
