@@ -32,9 +32,9 @@ void test(int nbThreads, int size, int seed) {
  */
 TEST(SortingTest, EmptyArray) {
     Quicksort<int> sorter(2);
-    std::vector<int> array; // Tableau vide
+    std::vector<int> array; 
     sorter.sort(array);
-    EXPECT_TRUE(array.empty()); // Le tableau reste vide
+    EXPECT_TRUE(array.empty()); 
 }
 
 /**
@@ -42,40 +42,40 @@ TEST(SortingTest, EmptyArray) {
  */
 TEST(SortingTest, SingleElement) {
     Quicksort<int> sorter(2);
-    std::vector<int> array = {42}; // Tableau avec un seul élément
+    std::vector<int> array = {42}; 
     sorter.sort(array);
-    EXPECT_EQ(array.size(), 1); // Taille doit rester 1
-    EXPECT_EQ(array[0], 42); // L'élément doit rester inchangé
+    EXPECT_EQ(array.size(), 1); 
+    EXPECT_EQ(array[0], 42); 
 }
 
 /**
- * @brief Tri d'un petit tableau avec un seul thread.
+ * @brief Tri d'un tableau de 10 éléments avec un seul thread.
  */
 TEST(SortingTest, SingleThreadSmallArray) {
     Quicksort<int> sorter(1);
-    std::vector<int> array = generateSequence(10, 42); // Tableau de 10 éléments
+    std::vector<int> array = generateSequence(10, 42); 
     sorter.sort(array);
-    EXPECT_TRUE(isSorted(array)); // Vérifie si le tableau est trié
+    EXPECT_TRUE(isSorted(array)); 
 }
 
 /**
- * @brief Tri d'un grand tableau avec un seul thread.
+ * @brief Tri d'un tableau de 100000 avec un seul thread.
  */
 TEST(SortingTest, SingleThreadLargeArray) {
     Quicksort<int> sorter(1);
-    std::vector<int> array = generateSequence(100000, 42); // Tableau de 100k éléments
+    std::vector<int> array = generateSequence(100000, 42); 
     sorter.sort(array);
-    EXPECT_TRUE(isSorted(array)); // Vérifie si le tableau est trié
+    EXPECT_TRUE(isSorted(array));
 }
 
 /**
- * @brief Tri d'un grand tableau avec plusieurs threads.
+ * @brief Tri d'un tableau de 1000000 avec plusieurs threads.
  */
-TEST(SortingTest, MultiThreadLargeArray) {
-    Quicksort<int> sorter(4);
-    std::vector<int> array = generateSequence(100000, 42); // Tableau de 100k éléments
+TEST(SortingTest, ManyThreadsLargeArray) {
+    Quicksort<int> sorter(8);
+    std::vector<int> array = generateSequence(1000000, 123); 
     sorter.sort(array);
-    EXPECT_TRUE(isSorted(array)); // Vérifie si le tableau est trié
+    EXPECT_TRUE(isSorted(array)); 
 }
 
 /**
@@ -83,21 +83,13 @@ TEST(SortingTest, MultiThreadLargeArray) {
  */
 TEST(SortingTest, IdenticalElementsArray) {
     Quicksort<int> sorter(4);
-    std::vector<int> array(1000, 42); // Tableau de 1000 éléments identiques
+    std::vector<int> array(1000, 42); 
     sorter.sort(array);
-    EXPECT_TRUE(isSorted(array)); // Vérifie si le tableau est trié
-    EXPECT_EQ(array[0], 42); // Vérifie que les valeurs n'ont pas changé
+    EXPECT_TRUE(isSorted(array));
+    EXPECT_EQ(array[0], 42); 
 }
 
-/**
- * @brief Tri d'un très grand tableau avec plusieurs threads.
- */
-TEST(SortingTest, ManyThreadsLargeArray) {
-    Quicksort<int> sorter(8);
-    std::vector<int> array = generateSequence(1000000, 123); // Tableau de 1M éléments
-    sorter.sort(array);
-    EXPECT_TRUE(isSorted(array)); // Vérifie si le tableau est trié
-}
+
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
