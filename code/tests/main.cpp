@@ -11,12 +11,12 @@
  * @param seed to use for the random generation of the sequence
  */
 void test(int nbThreads, int size, int seed) {
-  Quicksort<int> sorter(nbThreads);
-  std::vector<int> array = generateSequence(size, seed);
-  sorter.sort(array);
-  EXPECT_FALSE(array.empty());  // check that the result is not empty
-  EXPECT_EQ(array.size(), size); // check that the result has the same size
-  EXPECT_TRUE(isSorted(array)); // check that result is sorted
+    Quicksort<int> sorter(nbThreads);
+    std::vector<int> array = generateSequence(size, seed);
+    sorter.sort(array);
+    EXPECT_FALSE(array.empty());  // check that the result is not empty
+    EXPECT_EQ(array.size(), size); // check that the result has the same size
+    EXPECT_TRUE(isSorted(array)); // check that result is sorted
 }
 
 // TEST(SortingTest, Test1) {
@@ -83,19 +83,29 @@ TEST(SortingTest, ManyThreadsLargeArray) {
 }
 
 /**
- * @brief Tri d'un tableau avec des éléments identiques.
+ * @brief Tri d'un tableau de 1000000 avec beaucoup de threads.
  */
-TEST(SortingTest, IdenticalElementsArray) {
-    int size = 1000;
-    int nbThreads = 4;
-    int seed = 42;
-    
+TEST(SortingTest, LotOfThreadsLargeArray) {
+    int size = 1000000;
+    int nbThreads = 25;
+    int seed = 123;
+
     test(nbThreads, size, seed);
 }
 
+/**
+ * @brief Tri d'un tableau avec des éléments identiques.
+ */
+TEST(SortingTest, IdenticalElementsArray) {
+    Quicksort<int> sorter(4);
+    std::vector<int> array(1000, 42); 
+    sorter.sort(array);
+    EXPECT_TRUE(isSorted(array));
+    EXPECT_EQ(array[0], 42); 
+}
 
 
 int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
