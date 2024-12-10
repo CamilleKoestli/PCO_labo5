@@ -41,7 +41,7 @@ Les tests ont été effectués sur des tableaux de différentes tailles, avec un
 | 1000000 éléments différents avec beaucoup de threads | OK        |
 | 1000 éléments identiques avec plusieurs threads      | OK        |
 
-Malheureusement, lorsque je lance une centaine de fois les tests, une erreur `malloc(): unaligned tcache chunk detected` apparait. Je n'ai malheureusement pas réussi à trouver la source de cette erreur.
+Malheureusement, lorsque je lance une centaine de fois les tests, une erreur `malloc(): unaligned tcache chunk detected` apparaît. Je n'ai malheureusement pas réussi à trouver la source de cette erreur.
 
 ### Résultats des benchmarks
 
