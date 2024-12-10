@@ -1,7 +1,6 @@
 #ifndef QUICKSORT_H
 #define QUICKSORT_H
 
-#include <iostream>
 #include <queue>
 #include <vector>
 #include <algorithm>
@@ -27,8 +26,9 @@ public:
     ~Quicksort() {
         mutex.lock();
         stop = true;
-        condVar.notifyAll();
         mutex.unlock();
+
+        condVar.notifyAll();
 
         for (auto& thread : threads) {
             thread.join();
@@ -47,8 +47,9 @@ public:
         this->array = &array; 
         mutex.lock();
         tasks.emplace(0, array.size() - 1); 
-        condVar.notifyOne();
         mutex.unlock();
+
+        condVar.notifyOne();
 
         mutex.lock();
         while (!tasks.empty() || activeThreads > 0) {
@@ -61,15 +62,11 @@ public:
         }
     }
 
-    std::vector<T> generateRandomSequence(unsigned int size, unsigned int seed) {
-        return generateSequence(size, seed);
-    }
-
 private:
     struct Task {
-        int lo, hi;
+        unsigned int lo, hi;
 
-        Task(int low, int high) : lo(low), hi(high) {}
+        Task(unsigned int low, unsigned int high) : lo(low), hi(high) {}
     };
 
     PcoMutex mutex;                       // Accès à la section critique
@@ -79,22 +76,22 @@ private:
     std::vector<PcoThread> threads;       // Threads de travail
     unsigned int activeThreads = 0;       // Nombre de threads actifs
     bool stop = false;                    // Indique si les threads doivent s'arrêter
-    std::vector<T>* array = nullptr;      // Tableau partagé à trier
+    std::vector<T>* array;                // Tableau partagé à trier
 
     /**
      * @brief Exécutée par chaque thread pour faire le tri.
      */
     void worker() {
+        mutex.lock();
+
         while (true) {
             Task task(0, 0);
 
-            mutex.lock();
             while (!stop && tasks.empty()) {
                 condVar.wait(&mutex);
             }
 
-            if (stop && tasks.empty()) {
-                mutex.unlock();
+            if (stop) {
                 break;
             }
 
@@ -110,8 +107,8 @@ private:
             if (tasks.empty() && activeThreads == 0) {
                 finished.notifyAll();
             }
-            mutex.unlock();
         }
+        mutex.unlock();
     }
 
     /**
@@ -121,7 +118,7 @@ private:
      * @param hi L'indice supérieur du sous-tableau
      */
     void quicksort(std::vector<T>& array, int lo, int hi) {
-        if (lo >= hi) {
+        if (lo >= hi || lo < 0) {
             return;
         }
 
@@ -133,10 +130,15 @@ private:
         int pivotIndex = partition(array, lo, hi);
 
         mutex.lock();
-        tasks.emplace(lo, pivotIndex - 1);
-        tasks.emplace(pivotIndex + 1, hi); 
-        condVar.notifyOne();
+        if (lo != pivotIndex-1) {
+            tasks.emplace(lo, pivotIndex - 1);
+        }
+        if (hi != pivotIndex+1) {
+            tasks.emplace(pivotIndex + 1, hi); 
+        }
         mutex.unlock();
+
+        condVar.notifyOne();
     }
 
     /**
