@@ -16,7 +16,7 @@ La structure `Task` représente une tâche de tri. Elle contient les indices de 
 
 ### Concurrence
 
-Pour éviter les problèmes de concurrence, les threads utilisent des mutex pour accéder à la file de tâches. Un mutex est également utilisé pour protéger l'accès au tableau partagé. Les threads utilisent une condition variable pour attendre qu'une tâche soit disponible dans la file.
+Pour éviter les problèmes de concurrence, les threads utilisent des mutex pour accéder à la file de tâches. Un mutex est également utilisé pour protéger l'accès au tableau partagé. Les threads utilisent une variable de condition pour attendre qu'une tâche soit disponible dans la file.
 
 - `PcoMutex` : mutex qui protège les accès à la file de tâches et aux variables partagées.
 - `PcoCond` et `finished`: ces variables conditionnelles gèrent l'attente des threads sur la file de tâches et les notifie lorsque des tâches sont disponibles ou que le tri est terminé.
@@ -31,14 +31,15 @@ Les partitions de taille inférieure à 1000 éléments sont triées directement
 
 Les tests ont été effectués sur des tableaux de différentes tailles, avec un nombre de threads variable. Ces tests ont été réalisés afin de valider que le tri est correct et donc que notre algorithme est correctement implémenté. De plus, afin de pouvoir vérifier qu'aucun élément n'est supprimé, j'ai rajouté un check dans la fonction `test()` afin de vérifier que la taille de l'array a la même taille. Voici donc les différents tests effectués:
 
-| Tableaux                                           | Résultats |
-| -------------------------------------------------- | --------- |
-| Vide avec plusieurs threads                        | OK        |
-| 1 élément avec plusieurs threads                   | OK        |
-| 10 éléments différents avec un thread              | OK        |
-| 100000 éléments différents avec un thread          | OK        |
-| 1000000 éléments différents avec plusieurs threads | OK        |
-| 1000 éléments identiques avec plusieurs threads    | OK        |
+| Tableaux                                             | Résultats |
+| ---------------------------------------------------- | --------- |
+| Vide avec plusieurs threads                          | OK        |
+| 1 élément avec plusieurs threads                     | OK        |
+| 10 éléments différents avec un thread                | OK        |
+| 100000 éléments différents avec un thread            | OK        |
+| 1000000 éléments différents avec plusieurs threads   | OK        |
+| 1000000 éléments différents avec beaucoup de threads | OK        |
+| 1000 éléments identiques avec plusieurs threads      | OK        |
 
 ### Résultats des benchmarks
 
