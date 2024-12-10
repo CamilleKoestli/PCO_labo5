@@ -1,15 +1,15 @@
 #ifndef QUICKSORT_H
 #define QUICKSORT_H
 
-#include <queue>
-#include <vector>
-#include <algorithm>
-#include <stdexcept>
-#include <pcosynchro/pcothread.h>
-#include <pcosynchro/pcomutex.h>
-#include <pcosynchro/pcoconditionvariable.h>
 #include "multithreadedsort.h"
 #include "utils.h"
+#include <algorithm>
+#include <pcosynchro/pcoconditionvariable.h>
+#include <pcosynchro/pcomutex.h>
+#include <pcosynchro/pcothread.h>
+#include <queue>
+#include <stdexcept>
+#include <vector>
 
 /**
  * @brief Implémente l'algorithme de tri rapide multi-threadé.
@@ -17,8 +17,8 @@
 template<typename T>
 class Quicksort : public MultithreadedSort<T> {
 public:
-    Quicksort(unsigned int nbThreads) : MultithreadedSort<T>(nbThreads), stop(false) {
-        for (unsigned int i = 0; i < nbThreads; ++i) {
+    Quicksort(int nbThreads) : MultithreadedSort<T>(nbThreads), stop(false) {
+        for (int i = 0; i < nbThreads; ++i) {
             threads.emplace_back(&Quicksort::worker, this);
         }
     }
@@ -30,23 +30,23 @@ public:
 
         condVar.notifyAll();
 
-        for (auto& thread : threads) {
+        for (auto &thread: threads) {
             thread.join();
         }
     }
 
     /**
-     * @brief Trie un tableau en utilisant le tri rapide.
-     * @param array Tableau à trier
-     */
-    void sort(std::vector<T>& array) override {
+   * @brief Trie un tableau en utilisant le tri rapide.
+   * @param array Tableau à trier
+   */
+    void sort(std::vector<T> &array) override {
         if (array.empty()) {
-            return; 
+            return;
         }
 
-        this->array = &array; 
+        this->array = &array;
         mutex.lock();
-        tasks.emplace(0, array.size() - 1); 
+        tasks.emplace(0, array.size() - 1);
         mutex.unlock();
 
         condVar.notifyOne();
@@ -64,23 +64,23 @@ public:
 
 private:
     struct Task {
-        unsigned int lo, hi;
+        unsigned lo, hi;
 
-        Task(unsigned int low, unsigned int high) : lo(low), hi(high) {}
+        Task(unsigned low, unsigned high) : lo(low), hi(high) {}
     };
 
-    PcoMutex mutex;                       // Accès à la section critique
-    PcoConditionVariable condVar;         // Gestion des threads
-    PcoConditionVariable finished;        // Signaler la fin des tâches
-    std::queue<Task> tasks;               // File de tâches
-    std::vector<PcoThread> threads;       // Threads de travail
-    unsigned int activeThreads = 0;       // Nombre de threads actifs
-    bool stop = false;                    // Indique si les threads doivent s'arrêter
-    std::vector<T>* array;                // Tableau partagé à trier
+    PcoMutex mutex;                // Accès à la section critique
+    PcoConditionVariable condVar;  // Gestion des threads
+    PcoConditionVariable finished; // Signaler la fin des tâches
+    std::queue<Task> tasks;        // File de tâches
+    std::vector<PcoThread> threads;// Threads de travail
+    unsigned activeThreads = 0;    // Nombre de threads actifs
+    bool stop = false;             // Indique si les threads doivent s'arrêter
+    std::vector<T> *array;         // Tableau partagé à trier
 
     /**
-     * @brief Exécutée par chaque thread pour faire le tri.
-     */
+   * @brief Exécutée par chaque thread pour faire le tri.
+   */
     void worker() {
         mutex.lock();
 
@@ -100,10 +100,22 @@ private:
             activeThreads++;
             mutex.unlock();
 
-            quicksort(*array, task.lo, task.hi);
+            int pivotIndex = quicksort(*array, task.lo, task.hi);
 
             mutex.lock();
+            if (pivotIndex != -1) {
+
+                if (task.lo != pivotIndex - 1) {
+                    tasks.emplace(task.lo, pivotIndex - 1);
+                }
+                if (task.hi != pivotIndex + 1) {
+                    tasks.emplace(pivotIndex + 1, task.hi);
+                }
+                condVar.notifyOne();
+            }
+
             activeThreads--;
+
             if (tasks.empty() && activeThreads == 0) {
                 finished.notifyAll();
             }
@@ -112,47 +124,36 @@ private:
     }
 
     /**
-     * @brief Trie un tableau en utilisant le tri rapide.
-     * @param array Tableau à trier
-     * @param lo L'indice inférieur du sous-tableau
-     * @param hi L'indice supérieur du sous-tableau
-     */
-    void quicksort(std::vector<T>& array, int lo, int hi) {
+   * @brief Trie un tableau en utilisant le tri rapide.
+   * @param array Tableau à trier
+   * @param lo L'indice inférieur du sous-tableau
+   * @param hi L'indice supérieur du sous-tableau
+   */
+    int quicksort(std::vector<T> &array, const unsigned lo, const unsigned hi) {
         if (lo >= hi || lo < 0) {
-            return;
+            return -1;
         }
 
         if (hi - lo < 1000) {
             std::sort(array.begin() + lo, array.begin() + hi + 1);
-            return;
+            return -1;
         }
 
-        int pivotIndex = partition(array, lo, hi);
-
-        mutex.lock();
-        if (lo != pivotIndex-1) {
-            tasks.emplace(lo, pivotIndex - 1);
-        }
-        if (hi != pivotIndex+1) {
-            tasks.emplace(pivotIndex + 1, hi); 
-        }
-        mutex.unlock();
-
-        condVar.notifyOne();
+        return partition(array, lo, hi);
     }
 
     /**
-     * @brief Divise le tableau en deux partitions.
-     * @param array Tableau à partitionner
-     * @param lo L'indice inférieur du sous-tableau
-     * @param hi L'indice supérieur du sous-tableau
-     * @return L'indice du pivot après la partition
-     */
-    int partition(std::vector<T>& array, int lo, int hi) {
+   * @brief Divise le tableau en deux partitions.
+   * @param array Tableau à partitionner
+   * @param lo L'indice inférieur du sous-tableau
+   * @param hi L'indice supérieur du sous-tableau
+   * @return L'indice du pivot après la partition
+   */
+    unsigned partition(std::vector<T> &array, unsigned lo, unsigned hi) {
         T pivot = array[hi];
-        int i = lo;
+        unsigned i = lo;
 
-        for (int j = lo; j < hi; ++j) {
+        for (unsigned j = lo; j < hi; ++j) {
             if (array[j] <= pivot) {
                 std::swap(array[i], array[j]);
                 ++i;
@@ -163,4 +164,4 @@ private:
     }
 };
 
-#endif // QUICKSORT_H
+#endif// QUICKSORT_H
