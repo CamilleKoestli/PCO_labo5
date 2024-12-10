@@ -41,17 +41,19 @@ Les tests ont été effectués sur des tableaux de différentes tailles, avec un
 | 1000000 éléments différents avec beaucoup de threads | OK        |
 | 1000 éléments identiques avec plusieurs threads      | OK        |
 
+Malheureusement, lorsque je lance une centaine de fois les tests, une erreur `malloc(): unaligned tcache chunk detected` apparait. Je n'ai malheureusement pas réussi à trouver la source de cette erreur.
+
 ### Résultats des benchmarks
 
 Les benchmarks ont été effectués sur un tableau de 5000000 éléments aléatoires, avec un nombre de threads variable. Les résultats sont les suivants:
 
 | Nombre de threads | Temps réel (ns) | CPU time (ns) | Itérations |
 | ----------------- | --------------- | ------------- | ---------- |
-| 1                 | 1385544882      | 143328195     | 1          |
-| 2                 | 779300395       | 126960258     | 1          |
-| 4                 | 489572542       | 120802969     | 2          |
-| 8                 | 359329641       | 121373324     | 2          |
-| 16                | 318055731       | 122372508     | 2          |
+| 1                 | 2533866089      | 232235165     | 1          |
+| 2                 | 1468987602      | 228746789     | 1          |
+| 4                 | 894292376       | 207294103     | 2          |
+| 8                 | 894292376       | 207781613     | 2          |
+| 16                | 548107223       | 205555742     | 2          |
 
 Le but était de vérifier que le temps d'exécution diminue avec le nombre de threads.
 
