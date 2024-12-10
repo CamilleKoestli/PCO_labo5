@@ -29,7 +29,7 @@ Les partitions de taille inférieure à 1000 éléments sont triées directement
 
 ### Description des tests
 
-Les tests ont été effectués sur des tableaux de différentes tailles, avec un nombre de threads variable. Ces tests ont été réalisés afin de valider que le tri est correct et donc que notre algorithme est correctement implémenté. Voici donc les différents tests effectués:
+Les tests ont été effectués sur des tableaux de différentes tailles, avec un nombre de threads variable. Ces tests ont été réalisés afin de valider que le tri est correct et donc que notre algorithme est correctement implémenté. De plus, afin de pouvoir vérifier qu'aucun élément n'est supprimé, j'ai rajouté un check dans la fonction `test()` afin de vérifier que la taille de l'array a la même taille. Voici donc les différents tests effectués:
 
 | Tableaux                                           | Résultats |
 | -------------------------------------------------- | --------- |
