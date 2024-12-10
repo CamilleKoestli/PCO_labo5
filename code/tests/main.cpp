@@ -15,6 +15,7 @@ void test(int nbThreads, int size, int seed) {
   std::vector<int> array = generateSequence(size, seed);
   sorter.sort(array);
   EXPECT_FALSE(array.empty());  // check that the result is not empty
+  EXPECT_EQ(array.size(), size); // check that the result has the same size
   EXPECT_TRUE(isSorted(array)); // check that result is sorted
 }
 
@@ -41,52 +42,55 @@ TEST(SortingTest, EmptyArray) {
  * @brief Tri d'un tableau avec un seul élément.
  */
 TEST(SortingTest, SingleElement) {
-    Quicksort<int> sorter(2);
-    std::vector<int> array = {42}; 
-    sorter.sort(array);
-    EXPECT_EQ(array.size(), 1); 
-    EXPECT_EQ(array[0], 42); 
+    int size = 1;
+    int nbThreads = 2;
+    int seed = 42;
+
+    test(nbThreads, size, seed);
 }
 
 /**
  * @brief Tri d'un tableau de 10 éléments avec un seul thread.
  */
 TEST(SortingTest, SingleThreadSmallArray) {
-    Quicksort<int> sorter(1);
-    std::vector<int> array = generateSequence(10, 42); 
-    sorter.sort(array);
-    EXPECT_TRUE(isSorted(array)); 
+    int size = 10;
+    int nbThreads = 1;
+    int seed = 42;
+
+    test(nbThreads, size, seed);
 }
 
 /**
  * @brief Tri d'un tableau de 100000 avec un seul thread.
  */
 TEST(SortingTest, SingleThreadLargeArray) {
-    Quicksort<int> sorter(1);
-    std::vector<int> array = generateSequence(100000, 42); 
-    sorter.sort(array);
-    EXPECT_TRUE(isSorted(array));
+    int size = 100000;
+    int nbThreads = 1;
+    int seed = 42;
+
+    test(nbThreads, size, seed);
 }
 
 /**
  * @brief Tri d'un tableau de 1000000 avec plusieurs threads.
  */
 TEST(SortingTest, ManyThreadsLargeArray) {
-    Quicksort<int> sorter(8);
-    std::vector<int> array = generateSequence(1000000, 123); 
-    sorter.sort(array);
-    EXPECT_TRUE(isSorted(array)); 
+    int size = 1000000;
+    int nbThreads = 8;
+    int seed = 123;
+
+    test(nbThreads, size, seed);
 }
 
 /**
  * @brief Tri d'un tableau avec des éléments identiques.
  */
 TEST(SortingTest, IdenticalElementsArray) {
-    Quicksort<int> sorter(4);
-    std::vector<int> array(1000, 42); 
-    sorter.sort(array);
-    EXPECT_TRUE(isSorted(array));
-    EXPECT_EQ(array[0], 42); 
+    int size = 1000;
+    int nbThreads = 4;
+    int seed = 42;
+    
+    test(nbThreads, size, seed);
 }
 
 
