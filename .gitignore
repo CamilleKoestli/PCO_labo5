@@ -17,3 +17,4 @@ cmake-build-debug
 QtrainSim/src/mainwindow.cpp
 
 consignes.pdf
+code/.cache
