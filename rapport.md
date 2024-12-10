@@ -16,7 +16,7 @@ La structure `Task` représente une tâche de tri. Elle contient les indices de 
 
 ### Concurrence
 
-Pour éviter les problèmes de concurrence, les threads utilisent des mutex pour accéder à la file de tâches. Un mutex est également utilisé pour protéger l'accès au tableau partagé. Les threads utilisent une variable de condition pour attendre qu'une tâche soit disponible dans la file.
+Pour éviter les problèmes de concurrence, les threads utilisent des mutex pour accéder à la file de tâches. Je ne protège pas l'accès au tableau, car il n'y a pas de redimensionnement du tableau. De plus, comme chaque thread traite une partition différente, il n'y a pas de problème de concurrence sur les éléments du tableau.
 
 - `mutex` : mutex qui protège les accès à la file de tâches et aux variables partagées.
 - `condVar` et `finished`: ces variables de conditions gèrent l'attente des threads sur la file de tâches et les notifie lorsque des tâches sont disponibles ou que le tri est terminé.
